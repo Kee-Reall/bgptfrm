@@ -6,12 +6,12 @@ type Logger struct {
 }
 
 const (
-	green   byte = 0
-	red     byte = 1
-	yellow  byte = 2
-	blue    byte = 3
-	cyan    byte = 4
-	magenta byte = 5
+	green byte = iota
+	red
+	yellow
+	blue
+	cyan
+	magenta
 )
 
 var GlobalLogger *Logger = nil
