@@ -1,25 +1,15 @@
 package api
 
 import (
-	"blog-api/utils/ink"
+	"blog-api/utils/logger"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"time"
 )
-
-func getColorizedMoment(t time.Time) string {
-	return ink.Cyan(t.UTC().Format("2006-01-02T15:04:05.000Z"))
-}
 
 func globalHttpLogger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf(
-			"%s [HTTP | request] %s %s\n",
-			getColorizedMoment(time.Now()),
-			ink.Magenta(r.Method),
-			r.RequestURI,
-		)
+		logger.Info(fmt.Sprintf("%s %s", r.Method, r.URL.Path))
 		next.ServeHTTP(w, r)
 	})
 }
