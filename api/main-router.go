@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+type RouterMechanic func(*mux.Router)
+
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 }
@@ -15,12 +17,22 @@ func InitMainRouter() *mux.Router {
 	mainRouter := mux.NewRouter()
 	mainRouter.NotFoundHandler = globalHttpLogger(http.HandlerFunc(notFound))
 
-	api := mainRouter.PathPrefix("/api").Subrouter()
+	//получаем глобальный роутер
+	apiRouter := mainRouter.PathPrefix("/api").Subrouter()
 
-	setTestingRouter(api.PathPrefix("/testing").Subrouter())
+	//мапа механикам.
+	pathPrefixes := map[string]RouterMechanic{
+		"/testing": setTestingRouter,
+		"/devises": SetDevicesRouter,
+		"/sa":      superAdmin.SetSuperAdminRouter,
+	}
 
-	SetDevicesRouter(api.PathPrefix("/devices").Subrouter())
-	superAdmin.SetSuperAdminRouter(api.PathPrefix("/sa").Subrouter())
+	//передаём саброутеры функциям механикам.
+	//Они проинициализируют обработчики, на интересующие роуты, для саброутера
+
+	for path, mechanic := range pathPrefixes {
+		mechanic(apiRouter.PathPrefix(path).Subrouter())
+	}
 
 	mainRouter.Use(getGlobalMiddlewares()...)
 	return mainRouter

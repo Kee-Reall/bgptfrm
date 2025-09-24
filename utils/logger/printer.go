@@ -22,7 +22,7 @@ func process(ch chan printMessage, cm map[byte]func(string) string) {
 		if r := recover(); r != nil {
 			fmt.Println(Red("Recovered from panic:"), r)
 		}
-		go process(ch, cm)
+		process(ch, cm)
 	}()
 	for msg := range ch {
 		toLog := fmt.Sprintf("%s: %s", getMoment(time.Now()), *msg.text)

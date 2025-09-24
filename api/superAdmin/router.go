@@ -22,5 +22,6 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetSuperAdminRouter(subRouter *mux.Router) {
+	subRouter.Handle("/", http.HandlerFunc(getUsers)).Methods("GET")
 	subRouter.Methods("GET").HandlerFunc(getUsers)
 }
