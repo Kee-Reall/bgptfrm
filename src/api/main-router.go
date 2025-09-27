@@ -1,7 +1,7 @@
 package api
 
 import (
-	"blog-api/api/superAdmin"
+	"blog-api/src/api/superAdmin"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -15,6 +15,8 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 func InitMainRouter() *mux.Router {
 
 	mainRouter := mux.NewRouter()
+	mainRouter.StrictSlash(true)
+
 	mainRouter.NotFoundHandler = globalHttpLogger(http.HandlerFunc(notFound))
 
 	//получаем глобальный роутер

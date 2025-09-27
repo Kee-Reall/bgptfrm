@@ -13,5 +13,6 @@ func clearAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func setTestingRouter(r *mux.Router) {
+
 	r.HandleFunc("/all-data", clearAll).Methods("GET")
 }

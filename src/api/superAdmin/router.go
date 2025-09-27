@@ -1,7 +1,7 @@
 package superAdmin
 
 import (
-	"blog-api/utils/logger"
+	"blog-api/src/utils/logger"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -22,6 +22,7 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetSuperAdminRouter(subRouter *mux.Router) {
+	subRouter.Use(basicAuth)
 	subRouter.Handle("/", http.HandlerFunc(getUsers)).Methods("GET")
-	subRouter.Methods("GET").HandlerFunc(getUsers)
+
 }

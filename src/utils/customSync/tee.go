@@ -11,13 +11,13 @@ func Tee[T any](in <-chan T) (_, _ <-chan T) {
 			close(right)
 		}()
 		for val := range in {
-			left, right := right, left
+			leftScope, rightScope := right, left
 			for range 2 {
 				select {
-				case left <- val:
-					left = nil
-				case right <- val:
-					right = nil
+				case leftScope <- val:
+					leftScope = nil
+				case rightScope <- val:
+					rightScope = nil
 				}
 			}
 		}

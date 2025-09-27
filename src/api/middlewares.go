@@ -1,7 +1,7 @@
 package api
 
 import (
-	"blog-api/utils/logger"
+	"blog-api/src/utils/logger"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"

@@ -1,6 +1,8 @@
 package superAdmin
 
-import "blog-api/api/common"
+import (
+	"blog-api/src/api/common"
+)
 
 type SuperAdminUserSearchParams struct {
 	common.PaginationParams
