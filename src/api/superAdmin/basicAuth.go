@@ -4,6 +4,7 @@ import (
 	"blog-api/src/utils/logger"
 	"encoding/base64"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -32,7 +33,10 @@ func basicAuth(h http.Handler) http.Handler {
 		}
 
 		decodedParts := strings.Split(string(authData), ":")
-		if len(decodedParts) != 2 || decodedParts[0] != "admin" || decodedParts[1] != "admin" {
+
+		adminLogin, adminPassword := os.Getenv("ADMIN_LOGIN"), os.Getenv("ADMIN_PASSWORD")
+
+		if len(decodedParts) != 2 || decodedParts[0] != adminLogin || decodedParts[1] != adminPassword {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}

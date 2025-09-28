@@ -1,0 +1,6 @@
+CREATE USER :dbUser WITH PASSWORD ':dbPassword';
+
+CREATE DATABASE :dbName
+    WITH OWNER = :user;
+
+GRANT ALL PRIVILEGES ON DATABASE :dbName TO :user;

@@ -17,20 +17,23 @@ func TestTee(t *testing.T) {
 		}
 	}()
 	wg := sync.WaitGroup{}
-	wg.Go(
-		func() {
-			for i := range len(values) {
-				if v := <-out1; v != values[i] {
-					t.Errorf(`extpected v %d to be %d`, v, values[i])
-				}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		for i := range len(values) {
+			if v := <-out1; v != values[i] {
+				t.Errorf(`extpected v %d to be %d`, v, values[i])
 			}
-		})
-	wg.Go(func() {
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
 		for i := range len(values) {
 			if v := <-out2; v != values[i] {
 				t.Errorf(`extpected v %d to be %d`, v, values[i])
 			}
 		}
-	})
+	}()
 	wg.Wait()
 }
