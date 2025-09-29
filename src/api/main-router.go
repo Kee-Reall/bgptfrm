@@ -22,15 +22,15 @@ func InitMainRouter() *mux.Router {
 	//получаем глобальный роутер
 	apiRouter := mainRouter.PathPrefix("/api").Subrouter()
 
-	//мапа механикам.
+	//мап механикам.
 	pathPrefixes := map[string]RouterMechanic{
 		"/testing": setTestingRouter,
 		"/devises": SetDevicesRouter,
 		"/sa":      superAdmin.SetSuperAdminRouter,
 	}
 
-	//передаём саброутеры функциям механикам.
-	//Они проинициализируют обработчики, на интересующие роуты, для саброутера
+	//Передаём саброутеры функциям механикам.
+	//Они проинициализируют обработчики, для саброутера
 
 	for path, mechanic := range pathPrefixes {
 		mechanic(apiRouter.PathPrefix(path).Subrouter())

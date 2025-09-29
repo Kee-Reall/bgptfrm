@@ -2,43 +2,29 @@ package superAdmin
 
 import (
 	"blog-api/src/repository"
-	"context"
+	"blog-api/src/shared"
+	"blog-api/src/utils"
 	"encoding/json"
 	"net/http"
 )
 
-type User struct {
-	Id    string `json:"id"`
-	Title string `json:"title"`
-	Name  string `json:"name"`
+type UserProvider interface {
+	GetUsers(params shared.PaginationParams) ([]shared.User, error)
+}
+
+func sortByExtractor(_ []string) string {
+	return "createdAt"
 }
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	conn, err := repository.GetConnection()
+	users, err := repository.Repo.GetUsers(utils.ParsePaginationParams(r.URL.Query(), sortByExtractor))
 	if err != nil {
-		w.WriteHeader(500)
+		utils.WriteException(w)
 		return
-	}
-	rows, err := conn.Query(context.Background(), "SELECT id, title, name FROM users")
-	if err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	defer rows.Close()
-
-	users := make([]User, 0, 5)
-	for rows.Next() {
-		var u User
-		err := rows.Scan(&u.Id, &u.Title, &u.Name)
-		if err != nil {
-			w.WriteHeader(500)
-			return
-		}
-		users = append(users, u)
 	}
 	err = json.NewEncoder(w).Encode(users)
 	if err != nil {
-		w.WriteHeader(500)
+		utils.WriteException(w)
 		return
 	}
 	w.WriteHeader(200)

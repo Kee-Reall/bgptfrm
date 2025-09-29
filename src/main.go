@@ -32,19 +32,23 @@ func main() {
 		panic(err)
 	}
 
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DB_URL"))
+	ctx := context.Background()
+
+	conn, err := pgx.Connect(ctx, os.Getenv("DB_URL"))
 	if err != nil {
 		panic(errors.New("Unable to connect to database: " + err.Error()))
 	}
 
 	defer func() {
-		err := conn.Close(context.Background())
+		err := conn.Close(ctx)
 		if err != nil {
 			logger.ErrorException(err)
 		}
 	}()
 
-	repository.InitRepository(conn)
+	if ok := repository.InitRepository(conn); !ok {
+		panic("can't initialize db connection")
+	}
 
 	http.Handle("/", api.InitMainRouter())
 
