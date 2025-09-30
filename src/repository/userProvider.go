@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-func (r *Repository) GetUsers(pagParams shared.PaginationParams) ([]shared.User, error) {
+func (r *Repository) GetUsers(pagParams *shared.PaginationParams) ([]shared.User, error) {
 	rows, err := r.conn.Query(
 		context.Background(),
 		"SELECT email, login, created_at FROM users where deleted_at is null order by created_at DESC ",
@@ -15,11 +15,16 @@ func (r *Repository) GetUsers(pagParams shared.PaginationParams) ([]shared.User,
 	}
 	defer rows.Close()
 
-	users := make([]shared.User, 0, pagParams.PageSize)
+	userCap := pagParams.PageSize
+
+	if userCap > 128 {
+		userCap = 128
+	}
+
+	users := make([]shared.User, 0, userCap)
 	for rows.Next() {
 		var u shared.User
-		err := rows.Scan(&u.Email, &u.Login, &u.CreatedAt)
-		if err != nil {
+		if err := rows.Scan(&u.Email, &u.Login, &u.CreatedAt); err != nil {
 			return nil, connectionError
 		}
 		users = append(users, u)

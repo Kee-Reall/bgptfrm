@@ -2,9 +2,10 @@ package main
 
 import (
 	"blog-api/src/api"
+	"blog-api/src/core"
 	"blog-api/src/repository"
-	"blog-api/src/utils"
 	"blog-api/src/utils/logger"
+	"blog-api/src/utils/validation"
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
@@ -28,7 +29,7 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	if err := utils.ValidateEnv(); err != nil {
+	if err := validation.ValidateEnv(); err != nil {
 		panic(err)
 	}
 
@@ -48,6 +49,10 @@ func main() {
 
 	if ok := repository.InitRepository(conn); !ok {
 		panic("can't initialize db connection")
+	}
+
+	if ok := core.Init(); !ok {
+		panic("can't initialize core module")
 	}
 
 	http.Handle("/", api.InitMainRouter())
