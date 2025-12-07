@@ -50,7 +50,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	var dto shared.UserInputDto
 	if errs := validation.BindAndValidate(r.Body, &dto); errs != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(errs)
+		json.NewEncoder(w).Encode(errs)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)

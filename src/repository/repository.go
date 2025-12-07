@@ -2,12 +2,14 @@ package repository
 
 import (
 	"errors"
+
 	"github.com/jackc/pgx/v5"
 )
 
 var (
 	Repo            *Repository
 	connectionError = errors.New("connection error")
+	notFound        = errors.New("required data not found")
 )
 
 type Repository struct {
@@ -20,7 +22,6 @@ func InitRepository(conn *pgx.Conn) bool {
 			return false
 		}
 		Repo = &Repository{conn}
-		return true
 	}
 	return true
 }
